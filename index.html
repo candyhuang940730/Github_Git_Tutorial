@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>學生資料查詢系統</title>
+    <!-- Bootstrap 5 前端UI 框架-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    /* 整個頁面背景色*/
+    body { background-color: #f8f9fa; }
+    /* 卡片外觀：圓角+ 陰影*/
+    .card { border-radius: 15px; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+    /* 表格欄位置中*/
+    .table th, .table td { vertical-align: middle; }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+    <div class="card p-4">
+    <!-- 頁面標題-->
+    <h2 class="text-center mb-4">學生資料查詢系統</h2>
+    <!-- 顯示當前查詢類型（例如：所有學生、大一學生...） -->
+    <h5 class="text-primary mb-3">{{ query_type }}</h5>
+    <!-- 查詢表單：使用POST 送到後端/ -->
+    <form method="POST" class="row g-3 mb-4">
+        <!-- 選擇系所，下拉選單內容由Flask 傳入-->
+        <div class="col-md-3">
+            <select class="form-select" name="department">
+                <option value="">選擇系所</option>
+                <!-- Jinja2 for 回圈：將所有系所列出-->
+                    { for dept in departments %}
+                <option value="{{ dept.department }}">{{ dept.department }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <!-- 選擇年級-->
+        <div class="col-md-2">
+            <select class="form-select" name="grade">
+                <option value="">選擇年級</option>
+                <option value="1">大一</option>
+                <option value="2">大二</option>
+                <option value="3">大三</option>
+                <option value="4">大四</option>
+            </select>
+        </div>
+        <!-- 搜尋學號-->
+        <div class="col-md-3">
+            <input type="text" class="form-control" name="student_id" placeholder="輸入學號">
+        </div>
+        <!-- 四個查詢按鈕：action 的值會送到Flask -->
+        <div class="col-md-4 d-flex gap-2">
+            <!-- 顯示所有學生-->
+            <button name="action" value="all" class="btn btn-secondary w-100">所有學生</button>
+        
+            <!-- 依系所查詢-->
+            <button name="action" value="department" class="btn btn-primary w-100">依系所</button>
+        
+            <!-- 依年級查詢-->
+            <button name="action" value="grade" class="btn btn-info w-100">依年級</button>
+        
+            <!-- 查詢特定學號-->
+            <button name="action" value="search" class="btn btn-success w-100">查詢學號</button>
+        </div>
+    </form>
+    <!-- 學生資料表格-->
+    <table class="table table-bordered table-hover">
+    <thead class="table-primary">
+        <tr>
+            <th>學號</th>
+            <th>姓名</th>
+            <th>系所</th>
+            <th>年級</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Jinja2 回圈：把後端傳入的學生資料一筆一筆輸出-->
+        {% for s in students %}
+        <tr>
+            <td>{{ s.student_id }}</td>
+            <td>{{ s.name }}</td>
+            <td>{{ s.department }}</td>
+            <td>大{{ s.grade }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+                <!-- 前往管理頁面-->
+                <div class="text-center mt-3">
+                    <a href="/manage" class="btn btn-dark">前往管理頁面</a>
+                </div>
+                
+            </div>
+        </div>
+    </body>
+</html>
